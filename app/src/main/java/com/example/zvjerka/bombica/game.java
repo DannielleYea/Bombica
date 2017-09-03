@@ -65,7 +65,7 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
         for(int i = 0 ; i < 10; i++)
             tipke[i].setOnTouchListener(this);
 
-        //rand();
+        rand();
     }
 
     @Override
@@ -121,8 +121,6 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
             }
         }.start();
     }
-
-
 
     @Override
     public boolean onTouch (View v, MotionEvent event){
@@ -180,7 +178,6 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
             sifra[i] = (int)(Math.random() * 10);
     }
 
-
     private void obrada(int x){
         if(pogodeni == 7) {
             CDT.cancel();
@@ -206,6 +203,7 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
 
 
     }
+
     class vibra extends Thread{
 
         public vibra(){
