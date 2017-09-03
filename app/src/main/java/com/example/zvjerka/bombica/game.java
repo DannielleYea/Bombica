@@ -6,15 +6,17 @@ import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.concurrent.TimeUnit;
 
 
-public class game extends AppCompatActivity implements View.OnLongClickListener {
+public class game extends AppCompatActivity implements View.OnTouchListener {
 
     Button[] tipke = new Button[10];
     TextView[] znamenke = new TextView[10];
@@ -27,6 +29,7 @@ public class game extends AppCompatActivity implements View.OnLongClickListener 
     long do_kraja = 25000;
     Vibrator vib;
     int pogodeni = -1;
+    long zadnji = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +63,9 @@ public class game extends AppCompatActivity implements View.OnLongClickListener 
 
         preostalo = (TextView) findViewById(R.id.textView11);
         for(int i = 0 ; i < 10; i++)
-            tipke[i].setOnLongClickListener(this);
+            tipke[i].setOnTouchListener(this);
 
-        rand();
+        //rand();
     }
 
     @Override
@@ -70,7 +73,11 @@ public class game extends AppCompatActivity implements View.OnLongClickListener 
         for(int i = 0 ; i < 7 ; i++)
             dretve[i].interrupt();
 
-        vibra.interrupted();
+        D_vib.interrupt();
+
+        CharSequence text = "BackButtonPressed";
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.show();
 
         finish();
     }
@@ -115,8 +122,15 @@ public class game extends AppCompatActivity implements View.OnLongClickListener 
         }.start();
     }
 
+
+
     @Override
-    public boolean onLongClick (View v){
+    public boolean onTouch (View v, MotionEvent event){
+
+        if((System.currentTimeMillis() - zadnji ) < 350 )
+            return false;
+        zadnji = System.currentTimeMillis();
+
         switch(v.getId()){
             case R.id.T0:
                 obrada(0);
@@ -166,17 +180,23 @@ public class game extends AppCompatActivity implements View.OnLongClickListener 
             sifra[i] = (int)(Math.random() * 10);
     }
 
+
     private void obrada(int x){
-        if(pogodeni == 7)
+        if(pogodeni == 7) {
             CDT.cancel();
+
+            // fuckcija koja hendla pobjedu
+
+        }
+
+
         if (pogodeni == -1) pogodeni++;
 
         if(x == sifra[pogodeni]){
             znamenke[pogodeni].setText("" + x);
             znamenke[pogodeni].setTextColor(Color.parseColor("#009900"));
             pogodeni++;
-            if(pogodeni < 6)
-                znamenke[pogodeni+1].setText("_");
+
 
         }
         else{
@@ -197,7 +217,7 @@ public class game extends AppCompatActivity implements View.OnLongClickListener 
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException("Thread interrupted..."+e);
                }
             }
         }
@@ -220,7 +240,7 @@ public class game extends AppCompatActivity implements View.OnLongClickListener 
                 try {
                     sleep(100);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException("Thread interrupted..."+e);
                 }
             }
         }
