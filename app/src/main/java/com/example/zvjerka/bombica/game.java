@@ -210,14 +210,17 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
         }
 
         public void run() {
-            while (do_kraja > 250){
-                vib.vibrate(200);
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException("Thread interrupted..."+e);
-               }
+            while(!Thread.interrupted()) {
+                while (do_kraja > 250){
+                    vib.vibrate(200);
+                    }
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Thread interrupted..."+e);
+                }
             }
+        Thread.currentThread().interrupt();
         }
     }
 
@@ -228,19 +231,22 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
         }
 
         public synchronized void run(){
-            while(pogodeni < poz) {
-                runOnUiThread(new Runnable() {
+            while(!Thread.interrupted()) {
+                while(pogodeni < poz) {
+                    runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        znamenke[poz].setText("" + ((int) (Math.random() * 10)));
-                    }
+                            znamenke[poz].setText("" + ((int) (Math.random() * 10)));
+                        }
                 });
-                try {
-                    sleep(100);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException("Thread interrupted..."+e);
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Thread interrupted..."+e);
+                    }
                 }
             }
+        Thread.currentThread().interrupt();
         }
     }
 }
