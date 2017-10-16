@@ -26,7 +26,7 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
     Thread[] dretve;
     vibra D_vib;
     CountDownTimer CDT;
-    long do_kraja = 25000;
+    long do_kraja = 55000;
     Vibrator vib;
     int pogodeni = -1;
     long zadnji = 0;
@@ -117,6 +117,8 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
                 for(int y = 0 ; y < 7; y++)
                     dretve[y].interrupt();
                 D_vib.interrupt();
+                for(int i = 0; i < 10; i++)
+                    tipke[i].setClickable(false);
                 finish();
             }
         }.start();
@@ -179,13 +181,6 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
     }
 
     private void obrada(int x){
-        if(pogodeni == 7) {
-            CDT.cancel();
-
-            // fuckcija koja hendla pobjedu
-
-        }
-
 
         if (pogodeni == -1) pogodeni++;
 
@@ -194,6 +189,16 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
             znamenke[pogodeni].setTextColor(Color.parseColor("#009900"));
             pogodeni++;
 
+            if(pogodeni == 7) {
+                CDT.cancel();
+
+                for(int i = 0; i < 10 ; i++)
+                    tipke[i].setClickable(false);
+                // fuckcija koja hendla pobjedu
+
+
+
+            }
 
         }
         else{
