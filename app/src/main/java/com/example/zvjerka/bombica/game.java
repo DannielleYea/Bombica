@@ -1,6 +1,7 @@
 package com.example.zvjerka.bombica;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
@@ -196,7 +197,10 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
                     tipke[i].setClickable(false);
                 // fuckcija koja hendla pobjedu
 
+                Intent end = new Intent();
 
+                end.putExtra("VRIJEME", do_kraja);
+                startActivity(end);
 
             }
 
