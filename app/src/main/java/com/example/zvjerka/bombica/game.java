@@ -185,30 +185,34 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
 
         if (pogodeni == -1) pogodeni++;
 
+
         if(x == sifra[pogodeni]){
+
             znamenke[pogodeni].setText("" + x);
             znamenke[pogodeni].setTextColor(Color.parseColor("#009900"));
             pogodeni++;
-
-            if(pogodeni == 7) {
-                CDT.cancel();
-
-                for(int i = 0; i < 10 ; i++)
-                    tipke[i].setClickable(false);
-                // fuckcija koja hendla pobjedu
-
-                Intent end = new Intent();
-
-                end.putExtra("VRIJEME", do_kraja);
-                startActivity(end);
-
-            }
 
         }
         else{
             znamenke[pogodeni].setText("" + x);
             znamenke[pogodeni].setTextColor(Color.parseColor("#FF0000"));
         }
+
+        if(pogodeni == 7) {
+            CDT.cancel();
+
+            for(int i = 0; i < 10 ; i++)
+                tipke[i].setClickable(false);
+            // fuckcija koja hendla pobjedu
+
+            Intent end = new Intent(this, end_screen.class);
+
+            end.putExtra("VRIJEME", do_kraja);
+            startActivity(end);
+            return;
+
+        }
+
 
 
     }
