@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.widget.TextView;
 
+import java.util.concurrent.TimeUnit;
+
 public class end_screen extends AppCompatActivity {
     private long vrijeme;
     private TextView dod;
@@ -25,10 +27,10 @@ public class end_screen extends AppCompatActivity {
 
         Intent podaci = getIntent();
 
-        podaci.getLongExtra("VRIJEME", vrijeme);
+        vrijeme = podaci.getLongExtra("VRIJEME", 0);
 
         dod = (TextView) findViewById(R.id.do_kraja);
 
-        dod.setText( "" + vrijeme);
+        dod.setText( String.format("%02d:%02d", TimeUnit.MILLISECONDS.toSeconds(vrijeme), (vrijeme - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(vrijeme)))/10));
     }
 }

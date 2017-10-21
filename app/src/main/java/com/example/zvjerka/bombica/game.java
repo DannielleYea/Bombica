@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,39 +23,47 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
     Button[] tipke = new Button[10];
     TextView[] znamenke = new TextView[10];
     TextView preostalo;
+    LinearLayout[] lays = new LinearLayout[6];
     String s;
     int[] sifra = new int[7];
     Thread[] dretve;
     vibra D_vib;
     CountDownTimer CDT;
-    long do_kraja = 55000;
+    long do_kraja = 15000, zadnji = 0;
     Vibrator vib;
-    int pogodeni = -1;
-    long zadnji = 0;
+    int pogodeni = -1, vibi = 100;
+    Intent end;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        tipke[0] = (Button) findViewById(R.id.T0);
-        tipke[1] = (Button) findViewById(R.id.T1);
-        tipke[2] = (Button) findViewById(R.id.T2);
-        tipke[3] = (Button) findViewById(R.id.T3);
-        tipke[4] = (Button) findViewById(R.id.T4);
-        tipke[5] = (Button) findViewById(R.id.T5);
-        tipke[6] = (Button) findViewById(R.id.T6);
-        tipke[7] = (Button) findViewById(R.id.T7);
-        tipke[8] = (Button) findViewById(R.id.T8);
-        tipke[9] = (Button) findViewById(R.id.T9);
+        lays[0] = (LinearLayout) findViewById(R.id.vrijeme);
+        lays[1] = (LinearLayout) findViewById(R.id.znamenke);
+        lays[2] = (LinearLayout) findViewById(R.id.prvi);
+        lays[3] = (LinearLayout) findViewById(R.id.drugi);
+        lays[4] = (LinearLayout) findViewById(R.id.treci);
+        lays[5] = (LinearLayout) findViewById(R.id.cetri);
 
-        znamenke[0] = (TextView) findViewById(R.id.X0);
-        znamenke[1] = (TextView) findViewById(R.id.X1);
-        znamenke[2] = (TextView) findViewById(R.id.X2);
-        znamenke[3] = (TextView) findViewById(R.id.X3);
-        znamenke[4] = (TextView) findViewById(R.id.X4);
-        znamenke[5] = (TextView) findViewById(R.id.X5);
-        znamenke[6] = (TextView) findViewById(R.id.X6);
+        tipke[0] = (Button) lays[5].findViewById(R.id.T0);
+        tipke[1] = (Button) lays[2].findViewById(R.id.T1);
+        tipke[2] = (Button) lays[2].findViewById(R.id.T2);
+        tipke[3] = (Button) lays[2].findViewById(R.id.T3);
+        tipke[4] = (Button) lays[3].findViewById(R.id.T4);
+        tipke[5] = (Button) lays[3].findViewById(R.id.T5);
+        tipke[6] = (Button) lays[3].findViewById(R.id.T6);
+        tipke[7] = (Button) lays[4].findViewById(R.id.T7);
+        tipke[8] = (Button) lays[4].findViewById(R.id.T8);
+        tipke[9] = (Button) lays[4].findViewById(R.id.T9);
+
+        znamenke[0] = (TextView) lays[1].findViewById(R.id.X0);
+        znamenke[1] = (TextView) lays[1].findViewById(R.id.X1);
+        znamenke[2] = (TextView) lays[1].findViewById(R.id.X2);
+        znamenke[3] = (TextView) lays[1].findViewById(R.id.X3);
+        znamenke[4] = (TextView) lays[1].findViewById(R.id.X4);
+        znamenke[5] = (TextView) lays[1].findViewById(R.id.X5);
+        znamenke[6] = (TextView) lays[1].findViewById(R.id.X6);
 
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -65,7 +74,7 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
         preostalo = (TextView) findViewById(R.id.textView11);
         for(int i = 0 ; i < 10; i++)
             tipke[i].setOnTouchListener(this);
-
+        end = new Intent(this, end_screen.class);
         rand();
     }
 
@@ -104,8 +113,7 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
 
             @Override
             public void onTick(long mili) {
-                s = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toSeconds(mili), (mili - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(mili)))/10);
-                preostalo.setText(s);
+                preostalo.setText(String.format("%02d:%02d", TimeUnit.MILLISECONDS.toSeconds(mili), (mili - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(mili)))/10));
                 if(mili < 10000 && radi){
                     D_vib.start();
                     radi = false;
@@ -120,7 +128,8 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
                 D_vib.interrupt();
                 for(int i = 0; i < 10; i++)
                     tipke[i].setClickable(false);
-                finish();
+                end.putExtra("VRIJEME", 0);
+                startActivity(end);
             }
         }.start();
     }
@@ -205,16 +214,11 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
                 tipke[i].setClickable(false);
             // fuckcija koja hendla pobjedu
 
-            Intent end = new Intent(this, end_screen.class);
-
             end.putExtra("VRIJEME", do_kraja);
             startActivity(end);
             return;
 
         }
-
-
-
     }
 
     class vibra extends Thread{
@@ -224,13 +228,15 @@ public class game extends AppCompatActivity implements View.OnTouchListener {
 
         public void run() {
             while(!Thread.interrupted()) {
-                while (do_kraja > 250){
-                    vib.vibrate(200);
-                    }
+                while (do_kraja > 350){
+                    vib.vibrate(vibi);
+
                     try {
                         sleep(1000);
+                        vibi += 33;
                     } catch (InterruptedException e) {
                         throw new RuntimeException("Thread interrupted..."+e);
+                    }
                 }
             }
         Thread.currentThread().interrupt();
